@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  angular-frontend:
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: angular-frontend
+    ports:
+      - "80:80"
+    networks:
+      - bridge
+      
+  net:
+    build: 
+      context: ./bk
+      dockerfile: Dockerfile
+    container_name: net
+    ports:
+      - "8000:80"
+    networks:
+      - bridge
+
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    container_name: sql-server
+    environment:
+      SA_PASSWORD: "AdminSQL2023."
+      ACCEPT_EULA: "Y"
+    ports:
+      - "7158:1433"
+    volumes:
+      - ./bk:/var/opt/mssql
+    networks:
+      - bridge
+
+networks:
+  bridge:
